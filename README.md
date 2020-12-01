@@ -1,8 +1,8 @@
 ## 目次
-* [「アヤメ品種分類」とは](#「アヤメ品種分類」とは)
-* [iris.data](#iris.data)
-* [iris1.py](#iris1.py)
-* [iris2.py](#iris2.py)
+* [「アヤメ品種分類」とは](#アヤメ品種分類とは)
+* [iris.data](#irisdata)
+* [iris1.py](#iris1py)
+* [iris2.py](#iris2py)
 
 「アヤメ品種分類」とは
 ------
