@@ -87,3 +87,42 @@ def print_accuracy(clf, x_train, y_train, x_test, y_test):
 
 
 print_accuracy(clf, x_train, y_train, x_test, y_test)
+
+
+def draw(clf, x):
+    iris_feature = 'sepal length', 'sepal width', 'petal lenght', 'petal width'
+    # 开始画图
+    x1_min, x1_max = x[:, 0].min(), x[:, 0].max()  # 第0列的范围
+    x2_min, x2_max = x[:, 1].min(), x[:, 1].max()  # 第1列的范围
+    x1, x2 = np.mgrid[x1_min:x1_max:200j, x2_min:x2_max:200j]  # 生成网格采样点 开始坐标：结束坐标（不包括）：步长
+    # flat将二维数组转换成1个1维的迭代器，然后把x1和x2的所有可能值给匹配成为样本点
+    grid_test = np.stack((x1.flat, x2.flat), axis=1)  # stack():沿着新的轴加入一系列数组，竖着（按列）增加两个数组，grid_test的shape：(40000, 2)
+    print('grid_test:\n', grid_test)
+    # 输出样本到决策面的距离
+    z = clf.decision_function(grid_test)
+    print('the distance to decision plane:\n', z)
+
+    grid_hat = clf.predict(grid_test)  # 预测分类值 得到【0,0.。。。2,2,2】
+    print('grid_hat:\n', grid_hat)
+    grid_hat = grid_hat.reshape(x1.shape)  # reshape grid_hat和x1形状一致
+    # 若3*3矩阵e，则e.shape()为3*3,表示3行3列
+    # light是网格测试点的配色，相当于背景
+    # dark是样本点的配色
+    cm_light = mpl.colors.ListedColormap(['#A0FFA0', '#FFA0A0', '#A0A0FF'])
+    cm_dark = mpl.colors.ListedColormap(['g', 'b', 'r'])
+    # 画出所有网格样本点被判断为的分类，作为背景
+    plt.pcolormesh(x1, x2, grid_hat, cmap=cm_light)  # pcolormesh(x,y,z,cmap)这里参数代入
+    # x1，x2，grid_hat，cmap=cm_light绘制的是背景。
+    # squeeze()把y的个数为1的维度去掉，也就是变成一维。
+    plt.scatter(x[:, 0], x[:, 1], c=np.squeeze(y), edgecolor='k', s=50, cmap=cm_dark)  # 样本点
+    plt.scatter(x_test[:, 0], x_test[:, 1], s=200, facecolor='yellow', zorder=10, marker='+')  # 测试点
+    plt.xlabel(iris_feature[0], fontsize=20)
+    plt.ylabel(iris_feature[1], fontsize=20)
+    plt.xlim(x1_min, x1_max)
+    plt.ylim(x2_min, x2_max)
+    plt.title('svm in iris data classification', fontsize=30)
+    plt.grid()
+    plt.show()
+
+
+draw(clf, x)
